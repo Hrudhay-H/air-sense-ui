@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Thermometer, Droplets, Wind, Wifi, WifiOff, Beaker } from 'lucide-react';
+import { Thermometer, Droplets, Wind, Wifi, WifiOff, Beaker, AlertTriangle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(true);
@@ -24,6 +25,15 @@ const Index = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleSimulateAlert = () => {
+    setSensorData(prev => ({
+      temperature: prev.temperature + 5,
+      humidity: prev.humidity + 10,
+      co2: 1100, // Above threshold to show "Poor"
+      ammonia: prev.ammonia
+    }));
+  };
 
   const getTemperatureColor = (temp: number) => {
     if (temp < 18) return 'text-blue-600';
@@ -62,7 +72,16 @@ const Index = () => {
                 Air Quality Monitor
               </h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
+              <Button 
+                onClick={handleSimulateAlert}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 text-orange-600 border-orange-200 hover:bg-orange-50"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                Simulate Alert
+              </Button>
               {isConnected ? (
                 <div className="flex items-center gap-2 text-green-600">
                   <Wifi className="w-4 h-4" />
