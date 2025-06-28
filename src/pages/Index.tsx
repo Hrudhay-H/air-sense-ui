@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from 'react';
-import { Thermometer, Droplets, Wind, Wifi, WifiOff } from 'lucide-react';
+import { Thermometer, Droplets, Wind, Wifi, WifiOff, Beaker } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const Index = () => {
@@ -8,7 +7,8 @@ const Index = () => {
   const [sensorData, setSensorData] = useState({
     temperature: 23.5,
     humidity: 65.2,
-    co2: 412
+    co2: 412,
+    ammonia: 2.8
   });
 
   // Simulate real-time data updates (replace with actual API calls)
@@ -17,7 +17,8 @@ const Index = () => {
       setSensorData(prev => ({
         temperature: Math.round((prev.temperature + (Math.random() - 0.5) * 2) * 10) / 10,
         humidity: Math.round((prev.humidity + (Math.random() - 0.5) * 5) * 10) / 10,
-        co2: Math.round(prev.co2 + (Math.random() - 0.5) * 20)
+        co2: Math.round(prev.co2 + (Math.random() - 0.5) * 20),
+        ammonia: Math.round((prev.ammonia + (Math.random() - 0.5) * 0.5) * 10) / 10
       }));
     }, 3000);
 
@@ -38,6 +39,12 @@ const Index = () => {
   const getCO2Color = (co2: number) => {
     if (co2 > 1000) return 'text-red-500';
     if (co2 > 600) return 'text-orange-500';
+    return 'text-green-600';
+  };
+
+  const getAmmoniaColor = (ammonia: number) => {
+    if (ammonia > 10) return 'text-red-500';
+    if (ammonia > 5) return 'text-orange-500';
     return 'text-green-600';
   };
 
@@ -74,7 +81,7 @@ const Index = () => {
 
       {/* Main Dashboard */}
       <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Temperature Card */}
           <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm hover:bg-white/90">
             <CardContent className="p-6">
@@ -126,7 +133,7 @@ const Index = () => {
           </Card>
 
           {/* CO2 Card */}
-          <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm hover:bg-white/90 md:col-span-2 lg:col-span-1">
+          <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm hover:bg-white/90">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -145,6 +152,31 @@ const Index = () => {
                 </div>
                 <div className="text-sm text-gray-400 mt-1">
                   {sensorData.co2 > 1000 ? 'Poor' : sensorData.co2 > 600 ? 'Moderate' : 'Good'}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Ammonia Card */}
+          <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm hover:bg-white/90">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-violet-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Beaker className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Ammonia</h3>
+                    <p className="text-sm text-gray-500">Gas concentration</p>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className={`text-3xl font-bold ${getAmmoniaColor(sensorData.ammonia)} transition-colors`}>
+                  {sensorData.ammonia} <span className="text-lg">ppm</span>
+                </div>
+                <div className="text-sm text-gray-400 mt-1">
+                  {sensorData.ammonia > 10 ? 'High' : sensorData.ammonia > 5 ? 'Moderate' : 'Low'}
                 </div>
               </div>
             </CardContent>
